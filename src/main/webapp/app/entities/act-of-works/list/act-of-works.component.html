@@ -1,0 +1,94 @@
+<div>
+  <h2 id="page-heading" data-cy="ActOfWorksHeading">
+    <span jhiTranslate="myApp.actOfWorks.home.title">Act Of Works</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info mr-2" (click)="loadAll()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span jhiTranslate="myApp.actOfWorks.home.refreshListLabel">Refresh List</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-act-of-works"
+        [routerLink]="['/act-of-works/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="myApp.actOfWorks.home.createLabel"> Create a new Act Of Works </span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  <div class="alert alert-warning" id="no-result" *ngIf="actOfWorks?.length === 0">
+    <span jhiTranslate="myApp.actOfWorks.home.notFound">No actOfWorks found</span>
+  </div>
+
+  <div class="table-responsive" id="entities" *ngIf="actOfWorks && actOfWorks.length > 0">
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+        <tr>
+          <th scope="col"><span jhiTranslate="global.field.id">ID</span></th>
+          <th scope="col"><span jhiTranslate="myApp.actOfWorks.name">Name</span></th>
+          <th scope="col"><span jhiTranslate="myApp.actOfWorks.win">Win</span></th>
+          <th scope="col"><span jhiTranslate="myApp.actOfWorks.problev">Problev</span></th>
+          <th scope="col"><span jhiTranslate="myApp.actOfWorks.clientCar">Client Car</span></th>
+          <th scope="col"><span jhiTranslate="myApp.actOfWorks.master">Master</span></th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let actOfWorks of actOfWorks; trackBy: trackId" data-cy="entityTable">
+          <td>
+            <a [routerLink]="['/act-of-works', actOfWorks.id, 'view']">{{ actOfWorks.id }}</a>
+          </td>
+          <td>{{ actOfWorks.name }}</td>
+          <td>{{ actOfWorks.win }}</td>
+          <td>{{ actOfWorks.problev }}</td>
+          <td>
+            <div *ngIf="actOfWorks.clientCar">
+              <a [routerLink]="['/client-car', actOfWorks.clientCar?.id, 'view']">{{ actOfWorks.clientCar?.win }}</a>
+            </div>
+          </td>
+          <td>
+            <div *ngIf="actOfWorks.master">
+              <a [routerLink]="['/master', actOfWorks.master?.id, 'view']">{{ actOfWorks.master?.name }}</a>
+            </div>
+          </td>
+          <td class="text-right">
+            <div class="btn-group">
+              <button
+                type="submit"
+                [routerLink]="['/act-of-works', actOfWorks.id, 'view']"
+                class="btn btn-info btn-sm"
+                data-cy="entityDetailsButton"
+              >
+                <fa-icon icon="eye"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+              </button>
+
+              <button
+                type="submit"
+                [routerLink]="['/act-of-works', actOfWorks.id, 'edit']"
+                class="btn btn-primary btn-sm"
+                data-cy="entityEditButton"
+              >
+                <fa-icon icon="pencil-alt"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+              </button>
+
+              <button type="submit" (click)="delete(actOfWorks)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                <fa-icon icon="times"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

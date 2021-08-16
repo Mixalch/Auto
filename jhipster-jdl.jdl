@@ -1,0 +1,63 @@
+
+application {
+  config {
+    baseName myApp,
+    applicationType monolith,
+    packageName com.myapp,
+    authenticationType jwt,
+    devDatabaseType postgresql,
+    prodDatabaseType postgresql,
+    clientFramework angular
+  }
+  entities *
+}
+
+
+entity CarBrand {
+	brande String
+	
+}
+
+entity ClientCar {
+	brande String
+	win String
+	dateReceiving LocalDate
+}
+
+entity ActOfWorks{
+	name String
+    win String
+    problev String
+}
+
+entity Master {
+	name String
+	date LocalDate
+}
+
+
+relationship OneToMany {
+	CarBrand to ClientCar{CarBrand(brande)}
+	/**
+	* A relationship
+	*/
+	ClientCar to
+	/**
+	* Another side of the same relationship
+	*/
+	ActOfWorks{ClientCar(win)}
+    
+    Master to ActOfWorks{master(name)}
+}
+
+
+
+
+
+
+
+
+
+
+
+

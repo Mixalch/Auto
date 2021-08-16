@@ -1,0 +1,28 @@
+{
+  "myApp": {
+    "actOfWorks": {
+      "home": {
+        "title": "Act Of Works",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Act Of Works",
+        "createOrEditLabel": "Create or edit a Act Of Works",
+        "notFound": "No Act Of Works found"
+      },
+      "created": "A new Act Of Works is created with identifier {{ param }}",
+      "updated": "A Act Of Works is updated with identifier {{ param }}",
+      "deleted": "A Act Of Works is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Act Of Works {{ id }}?"
+      },
+      "detail": {
+        "title": "Act Of Works"
+      },
+      "id": "ID",
+      "name": "Name",
+      "win": "Win",
+      "problev": "Problev",
+      "clientCar": "Client Car",
+      "master": "Master"
+    }
+  }
+}

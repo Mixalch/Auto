@@ -1,0 +1,28 @@
+{
+  "myApp": {
+    "clientCar": {
+      "home": {
+        "title": "Client Cars",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Client Car",
+        "createOrEditLabel": "Create or edit a Client Car",
+        "notFound": "No Client Cars found"
+      },
+      "created": "A new Client Car is created with identifier {{ param }}",
+      "updated": "A Client Car is updated with identifier {{ param }}",
+      "deleted": "A Client Car is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Client Car {{ id }}?"
+      },
+      "detail": {
+        "title": "Client Car"
+      },
+      "id": "ID",
+      "brande": "Brande",
+      "win": "Win",
+      "dateReceiving": "Date Receiving",
+      "actOfWorks": "Act Of Works",
+      "carBrand": "Car Brand"
+    }
+  }
+}

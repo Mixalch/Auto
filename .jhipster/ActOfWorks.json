@@ -1,0 +1,44 @@
+{
+  "name": "ActOfWorks",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "win",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "problev",
+      "fieldType": "String"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "clientCar",
+      "otherEntityRelationshipName": "actOfWorks",
+      "javadoc": "Another side of the same relationship",
+      "relationshipName": "clientCar",
+      "otherEntityField": "win"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "master",
+      "otherEntityRelationshipName": "actOfWorks",
+      "relationshipName": "master",
+      "otherEntityField": "name"
+    }
+  ],
+  "entityTableName": "act_of_works",
+  "dto": "no",
+  "pagination": "no",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": ["myApp"],
+  "changelogDate": "20210713093926"
+}

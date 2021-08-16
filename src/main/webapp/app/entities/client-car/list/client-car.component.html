@@ -1,0 +1,88 @@
+<div>
+  <h2 id="page-heading" data-cy="ClientCarHeading">
+    <span jhiTranslate="myApp.clientCar.home.title">Client Cars</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info mr-2" (click)="loadAll()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span jhiTranslate="myApp.clientCar.home.refreshListLabel">Refresh List</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-client-car"
+        [routerLink]="['/client-car/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="myApp.clientCar.home.createLabel"> Create a new Client Car </span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  <div class="alert alert-warning" id="no-result" *ngIf="clientCars?.length === 0">
+    <span jhiTranslate="myApp.clientCar.home.notFound">No clientCars found</span>
+  </div>
+
+  <div class="table-responsive" id="entities" *ngIf="clientCars && clientCars.length > 0">
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+        <tr>
+          <th scope="col"><span jhiTranslate="global.field.id">ID</span></th>
+          <th scope="col"><span jhiTranslate="myApp.clientCar.brande">Brande</span></th>
+          <th scope="col"><span jhiTranslate="myApp.clientCar.win">Win</span></th>
+          <th scope="col"><span jhiTranslate="myApp.clientCar.dateReceiving">Date Receiving</span></th>
+          <th scope="col"><span jhiTranslate="myApp.clientCar.carBrand">Car Brand</span></th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let clientCar of clientCars; trackBy: trackId" data-cy="entityTable">
+          <td>
+            <a [routerLink]="['/client-car', clientCar.id, 'view']">{{ clientCar.id }}</a>
+          </td>
+          <td>{{ clientCar.brande }}</td>
+          <td>{{ clientCar.win }}</td>
+          <td>{{ clientCar.dateReceiving | formatMediumDate }}</td>
+          <td>
+            <div *ngIf="clientCar.carBrand">
+              <a [routerLink]="['/car-brand', clientCar.carBrand?.id, 'view']">{{ clientCar.carBrand?.brande }}</a>
+            </div>
+          </td>
+          <td class="text-right">
+            <div class="btn-group">
+              <button
+                type="submit"
+                [routerLink]="['/client-car', clientCar.id, 'view']"
+                class="btn btn-info btn-sm"
+                data-cy="entityDetailsButton"
+              >
+                <fa-icon icon="eye"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+              </button>
+
+              <button
+                type="submit"
+                [routerLink]="['/client-car', clientCar.id, 'edit']"
+                class="btn btn-primary btn-sm"
+                data-cy="entityEditButton"
+              >
+                <fa-icon icon="pencil-alt"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+              </button>
+
+              <button type="submit" (click)="delete(clientCar)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                <fa-icon icon="times"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

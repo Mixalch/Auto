@@ -1,0 +1,27 @@
+{
+  "name": "CarBrand",
+  "fields": [
+    {
+      "fieldName": "brande",
+      "fieldType": "String"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "clientCar",
+      "otherEntityRelationshipName": "carBrand",
+      "relationshipName": "clientCar"
+    }
+  ],
+  "entityTableName": "car_brand",
+  "dto": "no",
+  "pagination": "no",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": ["myApp"],
+  "changelogDate": "20210713093726"
+}

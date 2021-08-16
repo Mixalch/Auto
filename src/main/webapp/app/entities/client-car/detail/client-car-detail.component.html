@@ -1,0 +1,46 @@
+<div class="row justify-content-center">
+  <div class="col-8">
+    <div *ngIf="clientCar">
+      <h2 data-cy="clientCarDetailsHeading"><span jhiTranslate="myApp.clientCar.detail.title">Client Car</span></h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="global.field.id">ID</span></dt>
+        <dd>
+          <span>{{ clientCar.id }}</span>
+        </dd>
+        <dt><span jhiTranslate="myApp.clientCar.brande">Brande</span></dt>
+        <dd>
+          <span>{{ clientCar.brande }}</span>
+        </dd>
+        <dt><span jhiTranslate="myApp.clientCar.win">Win</span></dt>
+        <dd>
+          <span>{{ clientCar.win }}</span>
+        </dd>
+        <dt><span jhiTranslate="myApp.clientCar.dateReceiving">Date Receiving</span></dt>
+        <dd>
+          <span>{{ clientCar.dateReceiving | formatMediumDate }}</span>
+        </dd>
+        <dt><span jhiTranslate="myApp.clientCar.carBrand">Car Brand</span></dt>
+        <dd>
+          <div *ngIf="clientCar.carBrand">
+            <a [routerLink]="['/car-brand', clientCar.carBrand?.id, 'view']">{{ clientCar.carBrand?.brande }}</a>
+          </div>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+      </button>
+
+      <button type="button" [routerLink]="['/client-car', clientCar.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+      </button>
+    </div>
+  </div>
+</div>

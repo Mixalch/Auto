@@ -1,0 +1,78 @@
+<div class="row justify-content-center">
+  <div class="col-8">
+    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-client-car-heading" data-cy="ClientCarCreateUpdateHeading" jhiTranslate="myApp.clientCar.home.createOrEditLabel">
+        Create or edit a Client Car
+      </h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        <div class="form-group" [hidden]="editForm.get('id')!.value == null">
+          <label class="form-control-label" jhiTranslate="global.field.id" for="field_id">ID</label>
+          <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-control-label" jhiTranslate="myApp.clientCar.brande" for="field_brande">Brande</label>
+          <input type="text" class="form-control" name="brande" id="field_brande" data-cy="brande" formControlName="brande" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-control-label" jhiTranslate="myApp.clientCar.win" for="field_win">Win</label>
+          <input type="text" class="form-control" name="win" id="field_win" data-cy="win" formControlName="win" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-control-label" jhiTranslate="myApp.clientCar.dateReceiving" for="field_dateReceiving">Date Receiving</label>
+          <div class="input-group">
+            <input
+              id="field_dateReceiving"
+              data-cy="dateReceiving"
+              type="text"
+              class="form-control"
+              name="dateReceiving"
+              ngbDatepicker
+              #dateReceivingDp="ngbDatepicker"
+              formControlName="dateReceiving"
+            />
+            <span class="input-group-append">
+              <button type="button" class="btn btn-secondary" (click)="dateReceivingDp.toggle()">
+                <fa-icon icon="calendar-alt"></fa-icon>
+              </button>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-control-label" jhiTranslate="myApp.clientCar.carBrand" for="field_carBrand">Car Brand</label>
+          <select class="form-control" id="field_carBrand" data-cy="carBrand" name="carBrand" formControlName="carBrand">
+            <option [ngValue]="null"></option>
+            <option
+              [ngValue]="carBrandOption.id === editForm.get('carBrand')!.value?.id ? editForm.get('carBrand')!.value : carBrandOption"
+              *ngFor="let carBrandOption of carBrandsSharedCollection; trackBy: trackCarBrandById"
+            >
+              {{ carBrandOption.brande }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

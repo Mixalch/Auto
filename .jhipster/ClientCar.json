@@ -1,0 +1,43 @@
+{
+  "name": "ClientCar",
+  "fields": [
+    {
+      "fieldName": "brande",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "win",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "dateReceiving",
+      "fieldType": "LocalDate"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "actOfWorks",
+      "otherEntityRelationshipName": "clientCar",
+      "javadoc": "A relationship",
+      "relationshipName": "actOfWorks"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "carBrand",
+      "otherEntityRelationshipName": "clientCar",
+      "relationshipName": "carBrand",
+      "otherEntityField": "brande"
+    }
+  ],
+  "entityTableName": "client_car",
+  "dto": "no",
+  "pagination": "no",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": ["myApp"],
+  "changelogDate": "20210713093826"
+}
