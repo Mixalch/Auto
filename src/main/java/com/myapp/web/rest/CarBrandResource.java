@@ -1,7 +1,9 @@
 package com.myapp.web.rest;
 
 import com.myapp.domain.CarBrand;
+import com.myapp.domain.PermissionVM;
 import com.myapp.repository.CarBrandRepository;
+import com.myapp.service.PermissionService;
 import com.myapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -12,6 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.acls.domain.BasePermission;
+import org.springframework.security.acls.model.Permission;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;

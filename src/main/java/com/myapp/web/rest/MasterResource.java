@@ -1,7 +1,9 @@
 package com.myapp.web.rest;
 
 import com.myapp.domain.Master;
+import com.myapp.domain.PermissionVM;
 import com.myapp.repository.MasterRepository;
+import com.myapp.service.PermissionService;
 import com.myapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -12,6 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.acls.domain.BasePermission;
+import org.springframework.security.acls.model.Permission;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
@@ -34,8 +38,11 @@ public class MasterResource {
 
     private final MasterRepository masterRepository;
 
-    public MasterResource(MasterRepository masterRepository) {
+    private final PermissionService permissionService;
+
+    public MasterResource(MasterRepository masterRepository, PermissionService permissionService) {
         this.masterRepository = masterRepository;
+        this.permissionService = permissionService;
     }
 
     /**
@@ -178,5 +185,48 @@ public class MasterResource {
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @PostMapping("/masters/permission/authority")
+    public ResponseEntity<String> addPermissionForAuthority(@RequestBody PermissionVM permissionVM) {
+        Optional<Master> optionalMaster = masterRepository.findById(permissionVM.getEntityId());
+        if (!optionalMaster.isPresent()) {
+            return ResponseEntity.ok("car brand does not found");
+        }
+
+        Master master = optionalMaster.get();
+        permissionService.addPermissionForAuthority(
+            master,
+            convertFromStringToBasePermission(permissionVM.getPermission()),
+            permissionVM.getUserCredentional()
+        );
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/masters/permission/user")
+    public ResponseEntity<String> addPermissionForUser(@RequestBody PermissionVM permissionVM) {
+        Master master = new Master();
+        master.setId(permissionVM.getEntityId());
+        permissionService.addPermissionForUser(
+            master,
+            convertFromStringToBasePermission(permissionVM.getPermission()),
+            permissionVM.getUserCredentional()
+        );
+        return ResponseEntity.noContent().build();
+    }
+
+    private Permission convertFromStringToBasePermission(String permission) {
+        switch (permission.toUpperCase()) {
+            case "WRITE":
+                return BasePermission.WRITE;
+            case "ADMINISTRATION":
+                return BasePermission.ADMINISTRATION;
+            case "CREATE":
+                return BasePermission.CREATE;
+            case "DELETE":
+                return BasePermission.DELETE;
+            default:
+                return BasePermission.READ;
+        }
     }
 }

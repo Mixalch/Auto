@@ -14,7 +14,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "car_brand")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class CarBrand implements Serializable {
+public class CarBrand implements Serializable, BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
