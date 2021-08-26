@@ -39,7 +39,7 @@ public class HttpClientImplAcl implements HttpClient<AclByIdDto> {
     }
 
     @Override
-    public String post(String url, AclByIdDto dto, String header) {
+    public String post(String url, AclByIdDto dto, String token) {
         HttpRequest request = null;
         try {
             request =
@@ -48,7 +48,7 @@ public class HttpClientImplAcl implements HttpClient<AclByIdDto> {
                     .uri(new URI(url))
                     .header("Accept", "application/json")
                     .header("Content-Type", "application/json")
-                    .header("Authorization", "Bearer " + header)
+                    .header("Authorization", "Bearer " + token)
                     .header("X-TENANT-ID", "maksimdb")
                     .POST(HttpRequest.BodyPublishers.ofString(dto.toString()))
                     .build();

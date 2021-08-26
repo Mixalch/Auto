@@ -9,6 +9,7 @@
       </button>
 
       <button
+        *ngIf="getStatusRecord(0, 4) || getStatusRecord(0, 16)"
         id="jh-create-entity"
         data-cy="entityCreateButton"
         class="btn btn-primary jh-create-entity create-master"
@@ -47,17 +48,35 @@
           <td>{{ master.date | formatMediumDate }}</td>
           <td class="text-right">
             <div class="btn-group">
-              <button type="submit" [routerLink]="['/master', master.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+              <button
+                *ngIf="getStatusRecord(master.id, 1) || getStatusRecord(master.id, 16)"
+                type="submit"
+                [routerLink]="['/master', master.id, 'view']"
+                class="btn btn-info btn-sm"
+                data-cy="entityDetailsButton"
+              >
                 <fa-icon icon="eye"></fa-icon>
                 <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
               </button>
 
-              <button type="submit" [routerLink]="['/master', master.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+              <button
+                *ngIf="getStatusRecord(master.id, 2) || getStatusRecord(master.id, 16)"
+                type="submit"
+                [routerLink]="['/master', master.id, 'edit']"
+                class="btn btn-primary btn-sm"
+                data-cy="entityEditButton"
+              >
                 <fa-icon icon="pencil-alt"></fa-icon>
                 <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
               </button>
 
-              <button type="submit" (click)="delete(master)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+              <button
+                *ngIf="getStatusRecord(master.id, 8) || getStatusRecord(master.id, 16)"
+                type="submit"
+                (click)="delete(master)"
+                class="btn btn-danger btn-sm"
+                data-cy="entityDeleteButton"
+              >
                 <fa-icon icon="times"></fa-icon>
                 <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
               </button>

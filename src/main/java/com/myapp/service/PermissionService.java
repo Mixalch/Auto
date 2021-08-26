@@ -27,7 +27,7 @@ public class PermissionService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String token = tokenProvider.createToken(authentication, false);
         httpClient.post(
-            "http://localhost:8085/api/permission/user",
+            "http://192.168.1.30:8085/api/permission/user",
             new PermissionDto(targetObj.getId(), targetObj.getClass().getName(), permission.getMask(), username),
             token
         );
@@ -37,7 +37,7 @@ public class PermissionService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String token = tokenProvider.createToken(authentication, false);
         httpClient.post(
-            "http://localhost:8085/api/permission/authority",
+            "http://192.168.1.30:8085/api/permission/authority",
             new PermissionDto(targetObj.getId(), targetObj.getClass().getName(), permission.getMask(), authority),
             token
         );

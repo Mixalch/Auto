@@ -49,7 +49,7 @@ public class HttpClientImplPermission implements HttpClient<PermissionDto> {
     }
 
     @Override
-    public String post(String url, PermissionDto dto, String header) {
+    public String post(String url, PermissionDto dto, String token) {
         ObjectMapper objectMapper = new ObjectMapper();
 
         HttpRequest request = null;
@@ -60,7 +60,7 @@ public class HttpClientImplPermission implements HttpClient<PermissionDto> {
                     .uri(new URI(url))
                     .header("Accept", "application/json")
                     .header("Content-Type", "application/json")
-                    .header("Authorization", "Bearer " + header)
+                    .header("Authorization", "Bearer " + token)
                     .header("X-TENANT-ID", "maksimdb")
                     .POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(dto)))
                     .build();

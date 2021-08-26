@@ -3,6 +3,7 @@ package com.myapp.web.rest;
 import com.myapp.domain.Master;
 import com.myapp.domain.PermissionVM;
 import com.myapp.repository.MasterRepository;
+import com.myapp.service.MasterService;
 import com.myapp.service.PermissionService;
 import com.myapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
@@ -38,10 +39,13 @@ public class MasterResource {
 
     private final MasterRepository masterRepository;
 
+    private final MasterService masterService;
+
     private final PermissionService permissionService;
 
-    public MasterResource(MasterRepository masterRepository, PermissionService permissionService) {
+    public MasterResource(MasterRepository masterRepository, MasterService masterService, PermissionService permissionService) {
         this.masterRepository = masterRepository;
+        this.masterService = masterService;
         this.permissionService = permissionService;
     }
 
@@ -58,7 +62,7 @@ public class MasterResource {
         if (master.getId() != null) {
             throw new BadRequestAlertException("A new master cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Master result = masterRepository.save(master);
+        Master result = masterService.save(master);
         return ResponseEntity
             .created(new URI("/api/masters/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -90,11 +94,11 @@ public class MasterResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Master result = masterRepository.save(master);
+        Optional<Master> result = masterService.partialUpdate(master);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, master.getId().toString()))
-            .body(result);
+            .body(result.get());
     }
 
     /**
@@ -125,24 +129,10 @@ public class MasterResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<Master> result = masterRepository
-            .findById(master.getId())
-            .map(
-                existingMaster -> {
-                    if (master.getName() != null) {
-                        existingMaster.setName(master.getName());
-                    }
-                    if (master.getDate() != null) {
-                        existingMaster.setDate(master.getDate());
-                    }
-
-                    return existingMaster;
-                }
-            )
-            .map(masterRepository::save);
+        Optional<Master> optionalMaster = masterService.partialUpdate(master);
 
         return ResponseUtil.wrapOrNotFound(
-            result,
+            optionalMaster,
             HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, master.getId().toString())
         );
     }
@@ -155,7 +145,7 @@ public class MasterResource {
     @GetMapping("/masters")
     public List<Master> getAllMasters() {
         log.debug("REST request to get all Masters");
-        return masterRepository.findAll();
+        return masterService.findAll();
     }
 
     /**
@@ -167,7 +157,7 @@ public class MasterResource {
     @GetMapping("/masters/{id}")
     public ResponseEntity<Master> getMaster(@PathVariable Long id) {
         log.debug("REST request to get Master : {}", id);
-        Optional<Master> master = masterRepository.findById(id);
+        Optional<Master> master = masterService.findOne(id);
         return ResponseUtil.wrapOrNotFound(master);
     }
 
@@ -180,7 +170,8 @@ public class MasterResource {
     @DeleteMapping("/masters/{id}")
     public ResponseEntity<Void> deleteMaster(@PathVariable Long id) {
         log.debug("REST request to delete Master : {}", id);
-        masterRepository.deleteById(id);
+        Optional<Master> optionalMaster = masterRepository.findOne(id);
+        masterService.delete(optionalMaster.get());
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
