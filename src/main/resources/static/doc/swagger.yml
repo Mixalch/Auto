@@ -1,0 +1,1341 @@
+swagger: '2.0'
+info:
+  description: Api Documentation
+  version: '1.0'
+  title: Api Documentation
+  termsOfService: urn:tos
+  contact: {}
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0
+host: localhost:8080
+basePath: /
+tags:
+  - name: account-resource
+    description: Account Resource
+  - name: act-of-works-resource
+    description: Act Of Works Resource
+  - name: car-brand-resource
+    description: Car Brand Resource
+  - name: client-car-resource
+    description: Client Car Resource
+  - name: master-resource
+    description: Master Resource
+  - name: public-user-resource
+    description: Public User Resource
+  - name: user-jwt-controller
+    description: User JWT Controller
+  - name: user-resource
+    description: User Resource
+paths:
+  /api/account:
+    get:
+      tags:
+        - account-resource
+      summary: getAccount
+      operationId: getAccountUsingGET_1
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AdminUserDTO'
+      security:
+        - Authorization:
+            - global
+    post:
+      tags:
+        - account-resource
+      summary: saveAccount
+      operationId: saveAccountUsingPOST_1
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: userDTO
+          description: userDTO
+          required: true
+          schema:
+            $ref: '#/definitions/AdminUserDTO'
+      responses:
+        '200':
+          description: OK
+      security:
+        - Authorization:
+            - global
+  /api/account/change-password:
+    post:
+      tags:
+        - account-resource
+      summary: changePassword
+      operationId: changePasswordUsingPOST_1
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: passwordChangeDto
+          description: passwordChangeDto
+          required: true
+          schema:
+            $ref: '#/definitions/PasswordChangeDTO'
+      responses:
+        '200':
+          description: OK
+      security:
+        - Authorization:
+            - global
+  /api/account/reset-password/finish:
+    post:
+      tags:
+        - account-resource
+      summary: finishPasswordReset
+      operationId: finishPasswordResetUsingPOST_1
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: keyAndPassword
+          description: keyAndPassword
+          required: true
+          schema:
+            $ref: '#/definitions/KeyAndPasswordVM'
+      responses:
+        '200':
+          description: OK
+      security:
+        - Authorization:
+            - global
+  /api/account/reset-password/init:
+    post:
+      tags:
+        - account-resource
+      summary: requestPasswordReset
+      operationId: requestPasswordResetUsingPOST_1
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: mail
+          description: mail
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+      security:
+        - Authorization:
+            - global
+  /api/act-of-works:
+    get:
+      tags:
+        - act-of-works-resource
+      summary: getAllActOfWorks
+      operationId: getAllActOfWorksUsingGET_1
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ActOfWorks'
+      security:
+        - Authorization:
+            - global
+    post:
+      tags:
+        - act-of-works-resource
+      summary: createActOfWorks
+      operationId: createActOfWorksUsingPOST_1
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: actOfWorks
+          description: actOfWorks
+          required: true
+          schema:
+            $ref: '#/definitions/ActOfWorks'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ActOfWorks'
+      security:
+        - Authorization:
+            - global
+  /api/act-of-works/{id}:
+    get:
+      tags:
+        - act-of-works-resource
+      summary: getActOfWorks
+      operationId: getActOfWorksUsingGET_1
+      produces:
+        - '*/*'
+      parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ActOfWorks'
+      security:
+        - Authorization:
+            - global
+    put:
+      tags:
+        - act-of-works-resource
+      summary: updateActOfWorks
+      operationId: updateActOfWorksUsingPUT_1
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: actOfWorks
+          description: actOfWorks
+          required: true
+          schema:
+            $ref: '#/definitions/ActOfWorks'
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ActOfWorks'
+      security:
+        - Authorization:
+            - global
+    delete:
+      tags:
+        - act-of-works-resource
+      summary: deleteActOfWorks
+      operationId: deleteActOfWorksUsingDELETE_1
+      produces:
+        - '*/*'
+      parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+      security:
+        - Authorization:
+            - global
+    patch:
+      tags:
+        - act-of-works-resource
+      summary: partialUpdateActOfWorks
+      operationId: partialUpdateActOfWorksUsingPATCH_1
+      consumes:
+        - application/merge-patch+json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: actOfWorks
+          description: actOfWorks
+          required: true
+          schema:
+            $ref: '#/definitions/ActOfWorks'
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ActOfWorks'
+      security:
+        - Authorization:
+            - global
+  /api/activate:
+    get:
+      tags:
+        - account-resource
+      summary: activateAccount
+      operationId: activateAccountUsingGET_1
+      produces:
+        - '*/*'
+      parameters:
+        - name: key
+          in: query
+          description: key
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+      security:
+        - Authorization:
+            - global
+  /api/admin/users:
+    get:
+      tags:
+        - user-resource
+      summary: getAllUsers
+      operationId: getAllUsersUsingGET_1
+      produces:
+        - '*/*'
+      parameters:
+        - name: offset
+          in: query
+          required: false
+          type: integer
+          format: int64
+        - name: paged
+          in: query
+          required: false
+          type: boolean
+        - name: pageNumber
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: pageSize
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: sort.sorted
+          in: query
+          required: false
+          type: boolean
+        - name: sort.unsorted
+          in: query
+          required: false
+          type: boolean
+        - name: unpaged
+          in: query
+          required: false
+          type: boolean
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/AdminUserDTO'
+      security:
+        - Authorization:
+            - global
+    post:
+      tags:
+        - user-resource
+      summary: createUser
+      operationId: createUserUsingPOST_1
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: userDTO
+          description: userDTO
+          required: true
+          schema:
+            $ref: '#/definitions/AdminUserDTO'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/User'
+      security:
+        - Authorization:
+            - global
+    put:
+      tags:
+        - user-resource
+      summary: updateUser
+      operationId: updateUserUsingPUT_1
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: userDTO
+          description: userDTO
+          required: true
+          schema:
+            $ref: '#/definitions/AdminUserDTO'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AdminUserDTO'
+      security:
+        - Authorization:
+            - global
+  /api/admin/users/{login}:
+    get:
+      tags:
+        - user-resource
+      summary: getUser
+      operationId: getUserUsingGET_1
+      produces:
+        - '*/*'
+      parameters:
+        - name: login
+          in: path
+          description: login
+          required: true
+          type: string
+          pattern: ^(?>[a-zA-Z0-9!$&*+=?^_`{|}~.-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*)|(?>[_.@A-Za-z0-9-]+)$
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AdminUserDTO'
+      security:
+        - Authorization:
+            - global
+    delete:
+      tags:
+        - user-resource
+      summary: deleteUser
+      operationId: deleteUserUsingDELETE_1
+      produces:
+        - '*/*'
+      parameters:
+        - name: login
+          in: path
+          description: login
+          required: true
+          type: string
+          pattern: ^(?>[a-zA-Z0-9!$&*+=?^_`{|}~.-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*)|(?>[_.@A-Za-z0-9-]+)$
+      responses:
+        '200':
+          description: OK
+      security:
+        - Authorization:
+            - global
+  /api/authenticate:
+    get:
+      tags:
+        - account-resource
+      summary: isAuthenticated
+      operationId: isAuthenticatedUsingGET_1
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+      security:
+        - Authorization:
+            - global
+    post:
+      tags:
+        - user-jwt-controller
+      summary: authorize
+      operationId: authorizeUsingPOST_1
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: loginVM
+          description: loginVM
+          required: true
+          schema:
+            $ref: '#/definitions/LoginVM'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/JWTToken'
+      security:
+        - Authorization:
+            - global
+  /api/authorities:
+    get:
+      tags:
+        - public-user-resource
+      summary: getAuthorities
+      operationId: getAuthoritiesUsingGET_1
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              type: string
+      security:
+        - Authorization:
+            - global
+  /api/car-brands:
+    get:
+      tags:
+        - car-brand-resource
+      summary: getAllCarBrands
+      operationId: getAllCarBrandsUsingGET_1
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/CarBrand'
+      security:
+        - Authorization:
+            - global
+    post:
+      tags:
+        - car-brand-resource
+      summary: createCarBrand
+      operationId: createCarBrandUsingPOST_1
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: carBrand
+          description: carBrand
+          required: true
+          schema:
+            $ref: '#/definitions/CarBrand'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/CarBrand'
+      security:
+        - Authorization:
+            - global
+  /api/car-brands/{id}:
+    get:
+      tags:
+        - car-brand-resource
+      summary: getCarBrand
+      operationId: getCarBrandUsingGET_1
+      produces:
+        - '*/*'
+      parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/CarBrand'
+      security:
+        - Authorization:
+            - global
+    put:
+      tags:
+        - car-brand-resource
+      summary: updateCarBrand
+      operationId: updateCarBrandUsingPUT_1
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: carBrand
+          description: carBrand
+          required: true
+          schema:
+            $ref: '#/definitions/CarBrand'
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/CarBrand'
+      security:
+        - Authorization:
+            - global
+    delete:
+      tags:
+        - car-brand-resource
+      summary: deleteCarBrand
+      operationId: deleteCarBrandUsingDELETE_1
+      produces:
+        - '*/*'
+      parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+      security:
+        - Authorization:
+            - global
+    patch:
+      tags:
+        - car-brand-resource
+      summary: partialUpdateCarBrand
+      operationId: partialUpdateCarBrandUsingPATCH_1
+      consumes:
+        - application/merge-patch+json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: carBrand
+          description: carBrand
+          required: true
+          schema:
+            $ref: '#/definitions/CarBrand'
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/CarBrand'
+      security:
+        - Authorization:
+            - global
+  /api/client-cars:
+    get:
+      tags:
+        - client-car-resource
+      summary: getAllClientCars
+      operationId: getAllClientCarsUsingGET_1
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ClientCar'
+      security:
+        - Authorization:
+            - global
+    post:
+      tags:
+        - client-car-resource
+      summary: createClientCar
+      operationId: createClientCarUsingPOST_1
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: clientCar
+          description: clientCar
+          required: true
+          schema:
+            $ref: '#/definitions/ClientCar'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ClientCar'
+      security:
+        - Authorization:
+            - global
+  /api/client-cars/{id}:
+    get:
+      tags:
+        - client-car-resource
+      summary: getClientCar
+      operationId: getClientCarUsingGET_1
+      produces:
+        - '*/*'
+      parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ClientCar'
+      security:
+        - Authorization:
+            - global
+    put:
+      tags:
+        - client-car-resource
+      summary: updateClientCar
+      operationId: updateClientCarUsingPUT_1
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: clientCar
+          description: clientCar
+          required: true
+          schema:
+            $ref: '#/definitions/ClientCar'
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ClientCar'
+      security:
+        - Authorization:
+            - global
+    delete:
+      tags:
+        - client-car-resource
+      summary: deleteClientCar
+      operationId: deleteClientCarUsingDELETE_1
+      produces:
+        - '*/*'
+      parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+      security:
+        - Authorization:
+            - global
+    patch:
+      tags:
+        - client-car-resource
+      summary: partialUpdateClientCar
+      operationId: partialUpdateClientCarUsingPATCH_1
+      consumes:
+        - application/merge-patch+json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: clientCar
+          description: clientCar
+          required: true
+          schema:
+            $ref: '#/definitions/ClientCar'
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ClientCar'
+      security:
+        - Authorization:
+            - global
+  /api/masters:
+    get:
+      tags:
+        - master-resource
+      summary: getAllMasters
+      operationId: getAllMastersUsingGET_1
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Master'
+      security:
+        - Authorization:
+            - global
+    post:
+      tags:
+        - master-resource
+      summary: createMaster
+      operationId: createMasterUsingPOST_1
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: master
+          description: master
+          required: true
+          schema:
+            $ref: '#/definitions/Master'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Master'
+      security:
+        - Authorization:
+            - global
+  /api/masters/permission/authority:
+    post:
+      tags:
+        - master-resource
+      summary: addPermissionForAuthority
+      operationId: addPermissionForAuthorityUsingPOST_1
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: permissionVM
+          description: permissionVM
+          required: true
+          schema:
+            $ref: '#/definitions/PermissionVM'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+      security:
+        - Authorization:
+            - global
+  /api/masters/permission/user:
+    post:
+      tags:
+        - master-resource
+      summary: addPermissionForUser
+      operationId: addPermissionForUserUsingPOST_1
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: permissionVM
+          description: permissionVM
+          required: true
+          schema:
+            $ref: '#/definitions/PermissionVM'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+      security:
+        - Authorization:
+            - global
+  /api/masters/{id}:
+    get:
+      tags:
+        - master-resource
+      summary: getMaster
+      operationId: getMasterUsingGET_1
+      produces:
+        - '*/*'
+      parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Master'
+      security:
+        - Authorization:
+            - global
+    put:
+      tags:
+        - master-resource
+      summary: updateMaster
+      operationId: updateMasterUsingPUT_1
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: integer
+          format: int64
+        - in: body
+          name: master
+          description: master
+          required: true
+          schema:
+            $ref: '#/definitions/Master'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Master'
+      security:
+        - Authorization:
+            - global
+    delete:
+      tags:
+        - master-resource
+      summary: deleteMaster
+      operationId: deleteMasterUsingDELETE_1
+      produces:
+        - '*/*'
+      parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+      security:
+        - Authorization:
+            - global
+    patch:
+      tags:
+        - master-resource
+      summary: partialUpdateMaster
+      operationId: partialUpdateMasterUsingPATCH_1
+      consumes:
+        - application/merge-patch+json
+      produces:
+        - '*/*'
+      parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: integer
+          format: int64
+        - in: body
+          name: master
+          description: master
+          required: true
+          schema:
+            $ref: '#/definitions/Master'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Master'
+      security:
+        - Authorization:
+            - global
+  /api/register:
+    post:
+      tags:
+        - account-resource
+      summary: registerAccount
+      operationId: registerAccountUsingPOST_1
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: managedUserVM
+          description: managedUserVM
+          required: true
+          schema:
+            $ref: '#/definitions/ManagedUserVM'
+      responses:
+        '201':
+          description: Created
+      security:
+        - Authorization:
+            - global
+  /api/users:
+    get:
+      tags:
+        - public-user-resource
+      summary: getAllPublicUsers
+      operationId: getAllPublicUsersUsingGET_1
+      produces:
+        - '*/*'
+      parameters:
+        - name: offset
+          in: query
+          required: false
+          type: integer
+          format: int64
+        - name: paged
+          in: query
+          required: false
+          type: boolean
+        - name: pageNumber
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: pageSize
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: sort.sorted
+          in: query
+          required: false
+          type: boolean
+        - name: sort.unsorted
+          in: query
+          required: false
+          type: boolean
+        - name: unpaged
+          in: query
+          required: false
+          type: boolean
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/UserDTO'
+      security:
+        - Authorization:
+            - global
+securityDefinitions:
+  Authorization:
+    type: apiKey
+    name: Authorization
+    in: header
+definitions:
+  ActOfWorks:
+    type: object
+    properties:
+      clientCar:
+        description: Another side of the same relationship
+        $ref: '#/definitions/ClientCar'
+      id:
+        type: integer
+        format: int64
+      master:
+        $ref: '#/definitions/Master'
+      name:
+        type: string
+      problev:
+        type: string
+      win:
+        type: string
+    title: ActOfWorks
+  AdminUserDTO:
+    type: object
+    required:
+      - login
+    properties:
+      activated:
+        type: boolean
+      authorities:
+        type: array
+        uniqueItems: true
+        items:
+          type: string
+      createdBy:
+        type: string
+      createdDate:
+        type: string
+        format: date-time
+      email:
+        type: string
+        minLength: 5
+        maxLength: 254
+      firstName:
+        type: string
+        minLength: 0
+        maxLength: 50
+      id:
+        type: integer
+        format: int64
+      imageUrl:
+        type: string
+        minLength: 0
+        maxLength: 256
+      langKey:
+        type: string
+        minLength: 2
+        maxLength: 10
+      lastModifiedBy:
+        type: string
+      lastModifiedDate:
+        type: string
+        format: date-time
+      lastName:
+        type: string
+        minLength: 0
+        maxLength: 50
+      login:
+        type: string
+        minLength: 1
+        maxLength: 50
+        pattern: ^(?>[a-zA-Z0-9!$&*+=?^_`{|}~.-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*)|(?>[_.@A-Za-z0-9-]+)$
+    title: AdminUserDTO
+  CarBrand:
+    type: object
+    properties:
+      brande:
+        type: string
+      clientCars:
+        type: array
+        uniqueItems: true
+        items:
+          $ref: '#/definitions/ClientCar'
+      id:
+        type: integer
+        format: int64
+    title: CarBrand
+  ClientCar:
+    type: object
+    properties:
+      actOfWorks:
+        type: array
+        description: A relationship
+        uniqueItems: true
+        items:
+          $ref: '#/definitions/ActOfWorks'
+      brande:
+        type: string
+      carBrand:
+        $ref: '#/definitions/CarBrand'
+      dateReceiving:
+        type: string
+        format: date
+      id:
+        type: integer
+        format: int64
+      win:
+        type: string
+    title: ClientCar
+  JWTToken:
+    type: object
+    properties:
+      id_token:
+        type: string
+    title: JWTToken
+  KeyAndPasswordVM:
+    type: object
+    properties:
+      key:
+        type: string
+      newPassword:
+        type: string
+    title: KeyAndPasswordVM
+  LoginVM:
+    type: object
+    required:
+      - password
+      - username
+    properties:
+      password:
+        type: string
+        minLength: 4
+        maxLength: 100
+      rememberMe:
+        type: boolean
+      username:
+        type: string
+        minLength: 1
+        maxLength: 50
+    title: LoginVM
+  ManagedUserVM:
+    type: object
+    required:
+      - login
+    properties:
+      activated:
+        type: boolean
+      authorities:
+        type: array
+        uniqueItems: true
+        items:
+          type: string
+      createdBy:
+        type: string
+      createdDate:
+        type: string
+        format: date-time
+      email:
+        type: string
+        minLength: 5
+        maxLength: 254
+      firstName:
+        type: string
+        minLength: 0
+        maxLength: 50
+      id:
+        type: integer
+        format: int64
+      imageUrl:
+        type: string
+        minLength: 0
+        maxLength: 256
+      langKey:
+        type: string
+        minLength: 2
+        maxLength: 10
+      lastModifiedBy:
+        type: string
+      lastModifiedDate:
+        type: string
+        format: date-time
+      lastName:
+        type: string
+        minLength: 0
+        maxLength: 50
+      login:
+        type: string
+        minLength: 1
+        maxLength: 50
+        pattern: ^(?>[a-zA-Z0-9!$&*+=?^_`{|}~.-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*)|(?>[_.@A-Za-z0-9-]+)$
+      password:
+        type: string
+        minLength: 4
+        maxLength: 100
+    title: ManagedUserVM
+  Master:
+    type: object
+    properties:
+      actOfWorks:
+        type: array
+        uniqueItems: true
+        items:
+          $ref: '#/definitions/ActOfWorks'
+      date:
+        type: string
+        format: date
+      id:
+        type: integer
+        format: int64
+      name:
+        type: string
+    title: Master
+  PasswordChangeDTO:
+    type: object
+    properties:
+      currentPassword:
+        type: string
+      newPassword:
+        type: string
+    title: PasswordChangeDTO
+  PermissionVM:
+    type: object
+    properties:
+      entityId:
+        type: integer
+        format: int64
+      permission:
+        type: string
+      userCredentional:
+        type: string
+    title: PermissionVM
+  User:
+    type: object
+    required:
+      - activated
+      - login
+    properties:
+      activated:
+        type: boolean
+      email:
+        type: string
+        minLength: 5
+        maxLength: 254
+      firstName:
+        type: string
+        minLength: 0
+        maxLength: 50
+      id:
+        type: integer
+        format: int64
+      imageUrl:
+        type: string
+        minLength: 0
+        maxLength: 256
+      langKey:
+        type: string
+        minLength: 2
+        maxLength: 10
+      lastName:
+        type: string
+        minLength: 0
+        maxLength: 50
+      login:
+        type: string
+        minLength: 1
+        maxLength: 50
+        pattern: ^(?>[a-zA-Z0-9!$&*+=?^_`{|}~.-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*)|(?>[_.@A-Za-z0-9-]+)$
+      resetDate:
+        type: string
+        format: date-time
+    title: User
+  UserDTO:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      login:
+        type: string
+    title: UserDTO

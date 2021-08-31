@@ -78,7 +78,7 @@ spring:
         - dev
         - api-docs
         # Uncomment to activate TLS for the dev profile
-        #- tls
+        - tls
   jmx:
     enabled: false
   data:
@@ -130,7 +130,9 @@ server:
   servlet:
     session:
       cookie:
-        http-only: true
+        http-only: false
+    context-path: /internship/maksim_mikhalkevich/car/
+  port: 8080
 
 # Properties to be exposed on the /info management endpoint
 info:

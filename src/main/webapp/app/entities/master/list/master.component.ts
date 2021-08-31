@@ -45,13 +45,15 @@ export class MasterComponent implements OnInit {
   }
 
   apiStatusRecordByFetch(): void {
-    this.postData('http://localhost:8085/api/get-acl-entries?objE=com.myapp.domain.Master').then(data => {
-      this.masStatus = JSON.parse(data);
-    });
+    this.postData('https://practice.sqilsoft.by/internship/yury_sinkevich/acl/api/get-acl-entries?objE=com.myapp.domain.Master').then(
+      data => {
+        this.masStatus = JSON.parse(data);
+      }
+    );
   }
 
   apiCanDoByFetch(): void {
-    this.postData('http://localhost:8085/api/check-role').then(data => {
+    this.postData('https://practice.sqilsoft.by/internship/yury_sinkevich/acl/api/check-role').then(data => {
       this.canDo = JSON.parse(data);
     });
   }
