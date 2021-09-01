@@ -62,6 +62,7 @@ public class MasterResource {
         if (master.getId() != null) {
             throw new BadRequestAlertException("A new master cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        master.setId(0L);
         Master result = masterService.save(master);
         return ResponseEntity
             .created(new URI("/api/masters/" + result.getId()))
