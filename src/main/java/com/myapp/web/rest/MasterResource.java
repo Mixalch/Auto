@@ -182,11 +182,21 @@ public class MasterResource {
     @PostMapping("/masters/permission/authority")
     public ResponseEntity<String> addPermissionForAuthority(@RequestBody PermissionVM permissionVM) {
         Optional<Master> optionalMaster = masterRepository.findById(permissionVM.getEntityId());
-        if (!optionalMaster.isPresent()) {
-            return ResponseEntity.ok("car brand does not found");
+        if (!optionalMaster.isPresent() && permissionVM.getEntityId() != 0) {
+            return ResponseEntity.ok("book does not found");
         }
-
-        Master master = optionalMaster.get();
+        Master master;
+        if (permissionVM.getEntityId() == 0 && permissionVM.getPermission().equalsIgnoreCase("create")) {
+            master = new Master();
+            master.setId(0L);
+        } else {
+            master = optionalMaster.get();
+        }
+        permissionService.addPermissionForUser(
+            master,
+            convertFromStringToBasePermission(permissionVM.getPermission()),
+            permissionVM.getUserCredentional()
+        );
         permissionService.addPermissionForAuthority(
             master,
             convertFromStringToBasePermission(permissionVM.getPermission()),
@@ -197,8 +207,23 @@ public class MasterResource {
 
     @PostMapping("/masters/permission/user")
     public ResponseEntity<String> addPermissionForUser(@RequestBody PermissionVM permissionVM) {
-        Master master = new Master();
-        master.setId(permissionVM.getEntityId());
+        Optional<Master> optionalMaster = masterRepository.findById(permissionVM.getEntityId());
+        if (!optionalMaster.isPresent() && permissionVM.getEntityId() != 0) {
+            return ResponseEntity.ok("book does not found");
+        }
+        Master master;
+        if (permissionVM.getEntityId() == 0 && permissionVM.getPermission().equalsIgnoreCase("create")) {
+            master = new Master();
+            master.setId(0L);
+        } else {
+            master = optionalMaster.get();
+        }
+        permissionService.addPermissionForUser(
+            master,
+            convertFromStringToBasePermission(permissionVM.getPermission()),
+            permissionVM.getUserCredentional()
+        );
+
         permissionService.addPermissionForUser(
             master,
             convertFromStringToBasePermission(permissionVM.getPermission()),
