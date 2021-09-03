@@ -1,5 +1,6 @@
 package com.myapp.web.rest;
 
+import com.myapp.domain.DeletePermission;
 import com.myapp.domain.Master;
 import com.myapp.domain.PermissionVM;
 import com.myapp.repository.MasterRepository;
@@ -229,6 +230,18 @@ public class MasterResource {
             convertFromStringToBasePermission(permissionVM.getPermission()),
             permissionVM.getUserCredentional()
         );
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/masters/permissions/user")
+    public ResponseEntity<String> addPermissions(@RequestBody List<PermissionVM> permissionVM) {
+        masterService.addPermissions(permissionVM);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/masters/delete-permission/user")
+    public ResponseEntity<String> deletePermission(@RequestBody DeletePermission deletePermission) {
+        masterService.deletePermission(deletePermission);
         return ResponseEntity.noContent().build();
     }
 

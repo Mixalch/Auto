@@ -4,27 +4,27 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.myapp.service.HttpClient;
 import com.myapp.service.dto.AclByIdDto;
+import com.myapp.service.dto.DeletePermissionDto;
 import com.myapp.web.rest.AccountResource;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-@Service
-public class HttpClientImplAcl implements HttpClient<AclByIdDto> {
+public class HttpClientDeletePermissionImpl implements HttpClient<DeletePermissionDto> {
 
     private final Logger log = LoggerFactory.getLogger(AccountResource.class);
 
     @Autowired
     private final ObjectMapper objectMapper;
 
-    public HttpClientImplAcl(ObjectMapper objectMapper) {
+    public HttpClientDeletePermissionImpl(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 
@@ -40,9 +40,7 @@ public class HttpClientImplAcl implements HttpClient<AclByIdDto> {
         HttpResponse<String> response = null;
         try {
             response = java.net.http.HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (IOException e) {
-            log.error(e.toString());
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             log.error(e.toString());
         }
 
@@ -50,7 +48,7 @@ public class HttpClientImplAcl implements HttpClient<AclByIdDto> {
     }
 
     @Override
-    public String post(String url, AclByIdDto dto, String token) {
+    public String post(String url, DeletePermissionDto dto, String token) {
         HttpRequest request = null;
         try {
             request =
@@ -80,7 +78,7 @@ public class HttpClientImplAcl implements HttpClient<AclByIdDto> {
     }
 
     @Override
-    public String post(String uri, List<AclByIdDto> entity, String token) {
+    public String post(String uri, List<DeletePermissionDto> entity, String token) {
         HttpRequest request = null;
         try {
             request =

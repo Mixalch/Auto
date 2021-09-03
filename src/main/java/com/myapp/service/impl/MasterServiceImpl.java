@@ -1,11 +1,15 @@
 package com.myapp.service.impl;
 
+import com.myapp.domain.DeletePermission;
 import com.myapp.domain.MaskAndObject;
 import com.myapp.domain.Master;
+import com.myapp.domain.PermissionVM;
 import com.myapp.repository.MasterRepository;
 import com.myapp.security.jwt.TokenProvider;
 import com.myapp.service.MasterService;
 import com.myapp.service.PermissionService;
+import com.myapp.service.dto.DeletePermissionDto;
+import com.myapp.service.dto.PermissionDto;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -13,6 +17,7 @@ import java.util.stream.Collectors;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.acls.domain.BasePermission;
+import org.springframework.security.acls.model.Permission;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -112,5 +117,43 @@ public class MasterServiceImpl implements MasterService {
             .retrieve()
             .bodyToFlux(MaskAndObject.class);
         return employeeMap.collectList().block().stream().map(MaskAndObject::getObjId).collect(Collectors.toList());
+    }
+
+    @Override
+    public void addPermissions(List<PermissionVM> permissionVMS) {
+        List<PermissionDto> permissionDtos = new ArrayList<>();
+        for (PermissionVM permissionVM : permissionVMS) {
+            permissionDtos.add(
+                new PermissionDto(
+                    permissionVM.getEntityId(),
+                    Master.class.getName(),
+                    convertFromStringToBasePermission(permissionVM.getPermission()).getMask(),
+                    permissionVM.getUserCredentional()
+                )
+            );
+        }
+        permissionService.addPermissions(permissionDtos);
+    }
+
+    @Override
+    public void deletePermission(DeletePermission deletePermission) {
+        DeletePermissionDto deletePermissionDto = new DeletePermissionDto();
+        deletePermissionDto.setEntityClassName(Master.class.getName());
+        permissionService.deletePermission(deletePermissionDto);
+    }
+
+    private Permission convertFromStringToBasePermission(String permission) {
+        switch (permission.toUpperCase()) {
+            case "WRITE":
+                return BasePermission.WRITE;
+            case "ADMINISTRATION":
+                return BasePermission.ADMINISTRATION;
+            case "CREATE":
+                return BasePermission.CREATE;
+            case "DELETE":
+                return BasePermission.DELETE;
+            default:
+                return BasePermission.READ;
+        }
     }
 }
