@@ -136,8 +136,11 @@ public class MasterServiceImpl implements MasterService {
     }
 
     @Override
-    public void deletePermission(DeletePermission deletePermission) {
+    public void deletePermission(PermissionVM permissionVM) {
         DeletePermissionDto deletePermissionDto = new DeletePermissionDto();
+        deletePermissionDto.setEntityId(permissionVM.getEntityId());
+        deletePermissionDto.setUser(permissionVM.getUserCredentional());
+        deletePermissionDto.setPermission(convertFromStringToIntPermission(permissionVM.getPermission()));
         deletePermissionDto.setEntityClassName(Master.class.getName());
         permissionService.deletePermission(deletePermissionDto);
     }
@@ -154,6 +157,21 @@ public class MasterServiceImpl implements MasterService {
                 return BasePermission.DELETE;
             default:
                 return BasePermission.READ;
+        }
+    }
+
+    private int convertFromStringToIntPermission(String permission) {
+        switch (permission.toUpperCase()) {
+            case "WRITE":
+                return 2;
+            case "ADMINISTRATION":
+                return 16;
+            case "CREATE":
+                return 4;
+            case "DELETE":
+                return 8;
+            default:
+                return 1;
         }
     }
 }

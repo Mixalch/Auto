@@ -3,6 +3,7 @@ package com.myapp.service;
 import com.myapp.domain.DeletePermission;
 import com.myapp.domain.Master;
 import com.myapp.domain.PermissionVM;
+import java.security.Permission;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,5 +20,5 @@ public interface MasterService {
 
     void addPermissions(List<PermissionVM> permissionVMS);
 
-    void deletePermission(DeletePermission deletePermissionDto);
+    void deletePermission(PermissionVM permissionVMS);
 }

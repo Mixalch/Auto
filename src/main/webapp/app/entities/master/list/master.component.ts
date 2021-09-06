@@ -5,6 +5,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { IMaster } from '../master.model';
 import { MasterService } from '../service/master.service';
 import { MasterDeleteDialogComponent } from '../delete/master-delete-dialog.component';
+import { MasterPermissionDialogComponent } from '../permission/master-permission-dialog.component';
+import { MasterPermissionDeleteDialogComponent } from '../permission/delete-permission/master-permission-delete-dialog.component';
 
 @Component({
   selector: 'jhi-master',
@@ -56,6 +58,15 @@ export class MasterComponent implements OnInit {
     this.postData('https://practice.sqilsoft.by/internship/yury_sinkevich/acl/api/check-role').then(data => {
       this.canDo = JSON.parse(data);
     });
+  }
+
+  permission(): void {
+    const modalRef = this.modalService.open(MasterPermissionDialogComponent, { size: 'lg', backdrop: 'static' });
+    modalRef.componentInstance.masters = this.masters;
+  }
+
+  deletePermission(): void {
+    this.modalService.open(MasterPermissionDeleteDialogComponent, { size: 'lg', backdrop: 'static' });
   }
 
   getStatusRecord(idRecord: any, permissionId: number): any {

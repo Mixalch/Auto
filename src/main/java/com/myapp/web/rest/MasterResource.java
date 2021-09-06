@@ -240,8 +240,8 @@ public class MasterResource {
     }
 
     @PostMapping("/masters/delete-permission/user")
-    public ResponseEntity<String> deletePermission(@RequestBody DeletePermission deletePermission) {
-        masterService.deletePermission(deletePermission);
+    public ResponseEntity<String> deletePermission(@RequestBody PermissionVM permissionVM) {
+        masterService.deletePermission(permissionVM);
         return ResponseEntity.noContent().build();
     }
 

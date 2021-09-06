@@ -1,0 +1,50 @@
+<form>
+  <div class="modal-header">
+    <h4 class="modal-title" data-cy="bookDeleteDialogHeading" jhiTranslate="entity.delete.title">Confirm permission operation</h4>
+
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" (click)="cancel()">&times;</button>
+  </div>
+
+  <div class="modal-body">
+    <form [formGroup]="permissionForm">
+      <label> user name or role<input type="text" value="" formControlName="userCredentional" /> </label>
+
+      <div class="table-responsive" id="entities" *ngIf="masters && masters.length > 0">
+        <table class="table table-striped" aria-describedby="page-heading">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Name</th>
+              <th scope="col"><span>Permission</span></th>
+              <th scope="col"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let master of masters" data-cy="entityTable">
+              <td>
+                {{ master.id }}
+              </td>
+              <td>{{ master.name }}</td>
+              <td>
+                <select (change)="addPermission($event, master.id!)">
+                  <option>WRITE</option>
+                  <option>READ</option>
+                  <option>CREATE</option>
+                  <option>DELETE</option>
+                  <option>ADMINISTRATION</option>
+                </select>
+              </td>
+              <td><input type="checkbox" (change)="check(master.id!, $event.target)" /></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </form>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="confirmAdd()">&nbsp;Cancel</button>
+
+    <button id="jhi-confirm-delete-book" data-cy="entityConfirmAddButton" (click)="confirmAdd()" class="btn btn-danger">&nbsp;Add</button>
+  </div>
+</form>
