@@ -61,18 +61,16 @@ public class HttpClientDeletePermissionImpl implements HttpClient<DeletePermissi
                     .header("Content-Type", "application/json")
                     .header("Authorization", "Bearer " + token)
                     .header("X-TENANT-ID", "maksimdb")
-                    .POST(HttpRequest.BodyPublishers.ofString(dto.toString()))
+                    .POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(dto)))
                     .build();
-        } catch (URISyntaxException e) {
+        } catch (URISyntaxException | JsonProcessingException e) {
             log.error(e.toString());
         }
 
         HttpResponse<String> response = null;
         try {
             response = java.net.http.HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (IOException e) {
-            log.error(e.toString());
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             log.error(e.toString());
         }
 

@@ -94,7 +94,7 @@ export class MasterPermissionDialogComponent {
       body: JSON.stringify(sendData),
     });
 
-    const data: string = JSON.stringify(await response.json());
+    const data: string = await response.text();
 
     return data;
   }
@@ -109,6 +109,7 @@ export class MasterPermissionDialogComponent {
           this.toAddPermission[i].userCredentional = user;
         }
       }
+      this.activeModal.close('added');
       this.postData('https://practice.sqilsoft.by/internship/maksim_mikhalkevich/car/api/masters/permissions/user', this.toAddPermission);
     }
   }

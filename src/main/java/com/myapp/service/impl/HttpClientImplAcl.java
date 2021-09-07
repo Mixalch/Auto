@@ -61,9 +61,9 @@ public class HttpClientImplAcl implements HttpClient<AclByIdDto> {
                     .header("Content-Type", "application/json")
                     .header("Authorization", "Bearer " + token)
                     .header("X-TENANT-ID", "maksimdb")
-                    .POST(HttpRequest.BodyPublishers.ofString(dto.toString()))
+                    .POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(dto)))
                     .build();
-        } catch (URISyntaxException e) {
+        } catch (URISyntaxException | JsonProcessingException e) {
             log.error(e.toString());
         }
 

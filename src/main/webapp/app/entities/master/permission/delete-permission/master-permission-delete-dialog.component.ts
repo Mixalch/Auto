@@ -44,7 +44,7 @@ export class MasterPermissionDeleteDialogComponent {
       body: JSON.stringify(sendData),
     });
 
-    const data: string = JSON.stringify(await response.json());
+    const data: string = await response.text();
 
     return data;
   }
@@ -69,6 +69,7 @@ export class MasterPermissionDeleteDialogComponent {
           deletedPermission
         )
       );
+      this.activeModal.close('deleted');
     }
   }
 }
