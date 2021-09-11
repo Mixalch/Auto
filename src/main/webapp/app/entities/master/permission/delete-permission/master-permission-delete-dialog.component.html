@@ -6,31 +6,44 @@
   </div>
   <div class="modal-body">
     <label>
-      book id:
-      <input formControlName="entityId" />
-    </label>
-    <label>
-      permission:
-      <select (change)="selectPermission($event)">
-        <option>WRITE</option>
-        <option>READ</option>
-        <option>CREATE</option>
-        <option>DELETE</option>
-        <option>ADMINISTRATION</option>
-      </select>
-    </label>
-    <label>
       user:
       <input formControlName="userCredentional" />
     </label>
+    <button class="btn btn-primary btn-sm" data-cy="entityEditButton" (click)="downloadMasters()">Find</button>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancel()">
-      &nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
-    </button>
-
-    <button id="jhi-confirm-delete-book" data-cy="entityConfirmAddButton" class="btn btn-danger" (click)="deletePermission()">
-      &nbsp;Delete
-    </button>
+    <div class="table-responsive" id="entities" style="height: 400px" *ngIf="masters && masters.length > 0">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr>
+            <th scope="col"><span jhiTranslate="global.field.id">ID</span></th>
+            <th scope="col"><span jhiTranslate="myApp.master.name">Name</span></th>
+            <th scope="col"><span>Permission</span></th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let master of masters" data-cy="entityTable">
+            <td>
+              {{ master.id }}
+            </td>
+            <td>{{ master.name }}</td>
+            <td>
+              {{ master.mask }}
+            </td>
+            <td>
+              <button
+                id="jhi-confirm-delete-master"
+                data-cy="entityConfirmAddButton"
+                class="btn btn-danger"
+                (click)="deletePermission(master.id!, master.mask!)"
+              >
+                &nbsp;Delete
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </form>

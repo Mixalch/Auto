@@ -9,9 +9,11 @@ import com.myapp.security.jwt.TokenProvider;
 import com.myapp.service.MasterService;
 import com.myapp.service.PermissionService;
 import com.myapp.service.dto.DeletePermissionDto;
+import com.myapp.service.dto.MasterPermissionDTO;
 import com.myapp.service.dto.PermissionDto;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -104,7 +106,7 @@ public class MasterServiceImpl implements MasterService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String token = tokenProvider.createToken(authentication, false);
 
-        WebClient webClient = WebClient.create("https://practice.sqilsoft.by/internship/yury_sinkevich/acl");
+        WebClient webClient = WebClient.create("http://localhost:8085");
         Flux<MaskAndObject> employeeMap = webClient
             .get()
             .uri("/api/get-acl-entries?objE=com.myapp.domain.Master")
@@ -133,6 +135,48 @@ public class MasterServiceImpl implements MasterService {
             );
         }
         permissionService.addPermissions(permissionDtos);
+    }
+
+    @Override
+    public List<MasterPermissionDTO> getMastersByUser(String name) {
+        List<MaskAndObject> mastersMaskAndObject = getMasterPermissionsForUserByName(name);
+        List<Long> mastersIds = mastersMaskAndObject.stream().map(MaskAndObject::getObjId).collect(Collectors.toList());
+        List<Master> masters = masterRepository.findAll(mastersIds);
+        List<MasterPermissionDTO> masterPermissionDto = mastersMaskAndObject
+            .stream()
+            .map(
+                maskAndObject ->
+                    new MasterPermissionDTO(maskAndObject.getObjId(), convertFromIntToStringPermission(maskAndObject.getMask()))
+            )
+            .collect(Collectors.toList());
+        for (Master book : masters) {
+            for (MasterPermissionDTO bookPermissionDTO : masterPermissionDto) {
+                if (Objects.equals(book.getId(), bookPermissionDTO.getId())) {
+                    bookPermissionDTO.setName(book.getName());
+                }
+            }
+        }
+
+        return masterPermissionDto;
+    }
+
+    private List<MaskAndObject> getMasterPermissionsForUserByName(String userName) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String token = tokenProvider.createToken(authentication, false);
+
+        WebClient webClient = WebClient.create("http://localhost:8085");
+        Flux<MaskAndObject> employeeMap = webClient
+            .get()
+            .uri("/api/get-acl-entries-by-user/" + userName + "?objE=com.myapp.domain.Master")
+            .headers(
+                httpHeaders -> {
+                    httpHeaders.set("Authorization", "Bearer " + token);
+                    httpHeaders.set("X-TENANT-ID", "maksimdb");
+                }
+            )
+            .retrieve()
+            .bodyToFlux(MaskAndObject.class);
+        return new ArrayList<>(Objects.requireNonNull(employeeMap.collectList().block()));
     }
 
     @Override
@@ -172,6 +216,21 @@ public class MasterServiceImpl implements MasterService {
                 return 8;
             default:
                 return 1;
+        }
+    }
+
+    private String convertFromIntToStringPermission(int permission) {
+        switch (permission) {
+            case 2:
+                return "WRITE";
+            case 16:
+                return "ADMINISTRATION";
+            case 4:
+                return "CREATE";
+            case 8:
+                return "DELETE";
+            default:
+                return "READ";
         }
     }
 }

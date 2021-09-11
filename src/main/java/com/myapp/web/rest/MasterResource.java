@@ -6,6 +6,7 @@ import com.myapp.domain.PermissionVM;
 import com.myapp.repository.MasterRepository;
 import com.myapp.service.MasterService;
 import com.myapp.service.PermissionService;
+import com.myapp.service.dto.MasterPermissionDTO;
 import com.myapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -239,7 +240,12 @@ public class MasterResource {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/masters/delete-permission/user")
+    @GetMapping("/masters/by-user/{userName}")
+    public ResponseEntity<List<MasterPermissionDTO>> getMastersByUserName(@PathVariable String userName) {
+        return ResponseEntity.ok().body(masterService.getMastersByUser(userName));
+    }
+
+    @DeleteMapping("/masters/delete-permission/user")
     public ResponseEntity<String> deletePermission(@RequestBody PermissionVM permissionVM) {
         masterService.deletePermission(permissionVM);
         return ResponseEntity.noContent().build();

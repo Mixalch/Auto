@@ -8,33 +8,44 @@
   <div class="modal-body">
     <form [formGroup]="permissionForm">
       <label> user name or role<input type="text" value="" formControlName="userCredentional" /> </label>
+      <label> master name<input type="text" value="" formControlName="masterName" /> </label>
 
-      <div class="table-responsive" id="entities" *ngIf="masters && masters.length > 0">
+      <div class="table-responsive" id="entities" style="height: 400px" *ngIf="masters && masters.length > 0">
         <table class="table table-striped" aria-describedby="page-heading">
           <thead>
             <tr>
-              <th scope="col">ID</th>
-              <th scope="col">Name</th>
+              <th scope="col"><span jhiTranslate="global.field.id">ID</span></th>
+              <th scope="col"><span jhiTranslate="myApp.master.name">Name</span></th>
               <th scope="col"><span>Permission</span></th>
               <th scope="col"></th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let master of masters" data-cy="entityTable">
+            <tr>
+              <td>0</td>
+              <td>add permission for create books</td>
+              <td>CREATE</td>
+              <td><input type="checkbox" (change)="check(0, $event.target)" *ngIf="checkUserCredentional()" /></td>
+            </tr>
+            <tr *ngFor="let master of getMasters()" data-cy="entityTable">
               <td>
                 {{ master.id }}
               </td>
               <td>{{ master.name }}</td>
               <td>
-                <select (change)="addPermission($event, master.id!)">
+                <select
+                  multiple
+                  formControlName="permissions"
+                  (change)="addAction(master.id!)"
+                  *ngIf="showPermissions(master.id!) && checkUserCredentional()"
+                >
                   <option>WRITE</option>
                   <option>READ</option>
-                  <option>CREATE</option>
                   <option>DELETE</option>
                   <option>ADMINISTRATION</option>
                 </select>
               </td>
-              <td><input type="checkbox" (change)="check(master.id!, $event.target)" /></td>
+              <td><input type="checkbox" (change)="check(master.id!, $event.target)" *ngIf="checkUserCredentional()" /></td>
             </tr>
           </tbody>
         </table>
@@ -43,7 +54,7 @@
   </div>
 
   <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="confirmAdd()">&nbsp;Cancel</button>
+    <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancel()">&nbsp;Cancel</button>
 
     <button id="jhi-confirm-delete-book" data-cy="entityConfirmAddButton" (click)="confirmAdd()" class="btn btn-danger">&nbsp;Add</button>
   </div>

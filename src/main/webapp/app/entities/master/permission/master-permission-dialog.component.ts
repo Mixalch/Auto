@@ -18,14 +18,16 @@ export class MasterPermissionDialogComponent {
   masters?: IMaster[];
   toAddPermission: MasterPermission[];
   bufferPermissionArray: MasterPermission[];
+  selectedMasters: number[];
 
   permissionForm = this.fb.group({
-    userCredentional: [],
-    userPermission: [],
+    userCredentional: '',
+    permissions: [],
+    masterName: '',
   });
 
   constructor(protected masterService: MasterService, protected activeModal: NgbActiveModal, protected fb: FormBuilder) {
-    (this.toAddPermission = []), (this.bufferPermissionArray = []);
+    (this.bufferPermissionArray = []), (this.selectedMasters = []), (this.toAddPermission = []);
   }
 
   cancel(): void {
@@ -34,50 +36,61 @@ export class MasterPermissionDialogComponent {
 
   check(masterId: number, isChecked: any): void {
     const user = this.permissionForm.get(['userCredentional'])!.value;
-    const selectedPermission = this.bufferPermissionArray.filter(value => value.entityId === masterId)[0]?.permission;
-    const permission: MasterPermission = {
-      entityId: masterId,
-      permission: selectedPermission ? selectedPermission : 'WRITE',
-      userCredentional: user,
-    };
-
-    if (isChecked.checked) {
-      this.toAddPermission.push(permission);
+    if (masterId === 0 && isChecked.checked) {
+      const bookPermission: MasterPermission = {
+        entityId: masterId,
+        permission: 'CREATE',
+        userCredentional: user,
+      };
+      this.bufferPermissionArray.push(bookPermission);
+    } else if (masterId === 0) {
+      console.log(masterId);
+      this.bufferPermissionArray = this.bufferPermissionArray.filter(value => value.entityId !== masterId);
+    } else if (isChecked.checked) {
+      this.selectedMasters.push(masterId);
     } else {
-      this.toAddPermission = this.toAddPermission.filter(value => value.entityId !== masterId);
+      this.selectedMasters = this.selectedMasters.filter(value => value !== masterId);
+      this.bufferPermissionArray = this.bufferPermissionArray.filter(value => value.entityId !== masterId);
     }
   }
 
-  addPermission(e: any, masterId: number): void {
-    const selectedPermission = e.target.value;
-    const userName = this.permissionForm.get(['userCredentional']);
-    const user = userName !== null ? userName.value : '';
-    const permission: MasterPermission = {
-      entityId: masterId,
-      permission: selectedPermission,
-      userCredentional: user,
-    };
+  addAction(masterId: number): void {
+    const selectedPermissions: string[] = this.permissionForm.get(['permissions'])!.value;
+    const user = this.permissionForm.get(['userCredentional'])!.value;
+    const newPermissions: MasterPermission[] = [];
+    selectedPermissions.map(value => {
+      const masterPermission: MasterPermission = {
+        entityId: masterId,
+        permission: value,
+        userCredentional: user,
+      };
+      newPermissions.push(masterPermission);
+    });
+    const bufferArray = this.bufferPermissionArray.filter(value => value.entityId !== masterId);
+    const concatedArray = bufferArray.concat(newPermissions);
+    this.bufferPermissionArray = concatedArray;
+  }
 
-    let flag = false;
-    for (let i = 0; i < this.bufferPermissionArray.length; i++) {
-      if (this.bufferPermissionArray[i].entityId === masterId) {
-        this.bufferPermissionArray[i].permission = selectedPermission;
-        this.bufferPermissionArray[i].userCredentional = user;
-        flag = true;
-        break;
-      }
-    }
+  getMasters(): IMaster[] {
+    const masterName: string = this.permissionForm.get(['masterName'])!.value;
+    return this.masters!.filter(value => value.name!.toLowerCase().indexOf(masterName.toLowerCase()) !== -1);
+  }
 
-    if (!flag) {
-      this.bufferPermissionArray.push(permission);
+  showPermissions(masterId: number): any {
+    const permission: number[] = this.selectedMasters.filter(value => value === masterId);
+    if (permission.length > 0) {
+      return true;
     }
+  }
 
-    for (let i = 0; i < this.toAddPermission.length; i++) {
-      if (this.toAddPermission[i].entityId === masterId) {
-        this.toAddPermission[i].permission = selectedPermission;
-        this.bufferPermissionArray[i].userCredentional = user;
-      }
+  showAddPermissionsButton(): any {
+    if (this.bufferPermissionArray.length === 0) {
+      return true;
     }
+  }
+
+  checkUserCredentional(): any {
+    return this.permissionForm.get(['userCredentional'])!.value;
   }
 
   async postData(url = '', sendData: any): Promise<string> {
@@ -101,16 +114,13 @@ export class MasterPermissionDialogComponent {
 
   confirmAdd(): void {
     const user = this.permissionForm.get(['userCredentional'])!.value;
-    if (!user || this.toAddPermission.length === 0) {
-      alert('write user credentional or pick row');
+    if (!user) {
+      this.bufferPermissionArray.length = 0;
+      this.selectedMasters.length = 0;
+      alert('write user name or role');
     } else {
-      if (!this.toAddPermission[0].userCredentional) {
-        for (let i = 0; i < this.toAddPermission.length; i++) {
-          this.toAddPermission[i].userCredentional = user;
-        }
-      }
+      this.postData('http://localhost:8080/api/masters/permissions/user', this.bufferPermissionArray);
       this.activeModal.close('added');
-      this.postData('https://practice.sqilsoft.by/internship/maksim_mikhalkevich/car/api/masters/permissions/user', this.toAddPermission);
     }
   }
 }

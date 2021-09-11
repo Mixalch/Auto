@@ -21,6 +21,7 @@
 
       <button
         *ngIf="canDo"
+        style="margin-left: 8px"
         id="jh-permission"
         (click)="permission()"
         data-cy="entityCreateButton"
@@ -29,7 +30,14 @@
         <fa-icon icon="plus"></fa-icon>
         Add Permission
       </button>
-      <button *ngIf="canDo" id="jh-permission" (click)="deletePermission()" data-cy="entityCreateButton" class="btn btn-danger btn-sm">
+      <button
+        *ngIf="canDo"
+        style="margin-left: 8px"
+        id="jh-permission"
+        (click)="deletePermission()"
+        data-cy="entityCreateButton"
+        class="btn btn-danger btn-sm"
+      >
         <fa-icon icon="plus"></fa-icon>
         Delete Permission
       </button>

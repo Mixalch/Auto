@@ -36,7 +36,7 @@ public class PermissionService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String token = tokenProvider.createToken(authentication, false);
         httpClient.post(
-            "https://practice.sqilsoft.by/internship/yury_sinkevich/acl/api/permission/user",
+            "http://localhost:8085/api/permission/user",
             new PermissionDto(targetObj.getId(), targetObj.getClass().getName(), permission.getMask(), username),
             token
         );
@@ -46,7 +46,7 @@ public class PermissionService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String token = tokenProvider.createToken(authentication, false);
         httpClient.post(
-            "https://practice.sqilsoft.by/internship/yury_sinkevich/acl/api/permission/authority",
+            "http://localhost:8085/api/permission/authority",
             new PermissionDto(targetObj.getId(), targetObj.getClass().getName(), permission.getMask(), authority),
             token
         );
@@ -55,16 +55,12 @@ public class PermissionService {
     public void addPermissions(List<PermissionDto> permissionDtos) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String token = tokenProvider.createToken(authentication, false);
-        httpClient.post("https://practice.sqilsoft.by/internship/yury_sinkevich/acl/api/permissions/user", permissionDtos, token);
+        httpClient.post("http://localhost:8085/api/permissions/user", permissionDtos, token);
     }
 
     public void deletePermission(DeletePermissionDto deletePermissionDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String token = tokenProvider.createToken(authentication, false);
-        deletePermissionDtoHttpClient.post(
-            "https://practice.sqilsoft.by/internship/yury_sinkevich/acl/api/delete-permission/user",
-            deletePermissionDto,
-            token
-        );
+        deletePermissionDtoHttpClient.post("http://localhost:8085/api/delete-permission/user", deletePermissionDto, token);
     }
 }
