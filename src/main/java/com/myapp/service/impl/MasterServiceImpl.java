@@ -106,7 +106,7 @@ public class MasterServiceImpl implements MasterService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String token = tokenProvider.createToken(authentication, false);
 
-        WebClient webClient = WebClient.create("http://localhost:8085");
+        WebClient webClient = WebClient.create("https://practice.sqilsoft.by/internship/yury_sinkevich/acl");
         Flux<MaskAndObject> employeeMap = webClient
             .get()
             .uri("/api/get-acl-entries?objE=com.myapp.domain.Master")
@@ -164,7 +164,7 @@ public class MasterServiceImpl implements MasterService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String token = tokenProvider.createToken(authentication, false);
 
-        WebClient webClient = WebClient.create("http://localhost:8085");
+        WebClient webClient = WebClient.create("https://practice.sqilsoft.by/internship/yury_sinkevich/acl");
         Flux<MaskAndObject> employeeMap = webClient
             .get()
             .uri("/api/get-acl-entries-by-user/" + userName + "?objE=com.myapp.domain.Master")

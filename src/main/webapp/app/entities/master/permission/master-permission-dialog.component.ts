@@ -119,7 +119,10 @@ export class MasterPermissionDialogComponent {
       this.selectedMasters.length = 0;
       alert('write user name or role');
     } else {
-      this.postData('http://localhost:8080/api/masters/permissions/user', this.bufferPermissionArray);
+      this.postData(
+        'https://practice.sqilsoft.by/internship/maksim_mikhalkevich/car/api/masters/permissions/user',
+        this.bufferPermissionArray
+      );
       this.activeModal.close('added');
     }
   }

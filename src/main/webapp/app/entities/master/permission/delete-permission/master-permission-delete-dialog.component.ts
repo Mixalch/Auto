@@ -36,7 +36,7 @@ export class MasterPermissionDeleteDialogComponent {
 
   downloadMasters(): void {
     const user: string = this.permissionForm.get(['userCredentional'])!.value;
-    this.getData(`http://localhost:8080/api/masters/by-user/${user}`).then(data => {
+    this.getData(`https://practice.sqilsoft.by/internship/maksim_mikhalkevich/car/api/masters/by-user/${user}`).then(data => {
       this.masters = JSON.parse(data);
     });
   }
@@ -94,7 +94,7 @@ export class MasterPermissionDeleteDialogComponent {
       permission: mask,
       userCredentional: user,
     };
-    this.postData('http://localhost:8080/api/masters/delete-permission/user', toDelete);
+    this.postData('https://practice.sqilsoft.by/internship/maksim_mikhalkevich/car/api/masters/delete-permission/user', toDelete);
     this.masters = this.masters!.filter(value => {
       if (value.id === masterId && value.mask === mask) {
         return false;

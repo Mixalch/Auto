@@ -4,6 +4,7 @@ import com.myapp.domain.DeletePermission;
 import com.myapp.domain.Master;
 import com.myapp.domain.PermissionVM;
 import com.myapp.repository.MasterRepository;
+import com.myapp.security.AuthoritiesConstants;
 import com.myapp.service.MasterService;
 import com.myapp.service.PermissionService;
 import com.myapp.service.dto.MasterPermissionDTO;
@@ -17,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.model.Permission;
 import org.springframework.transaction.annotation.Transactional;
@@ -182,6 +184,7 @@ public class MasterResource {
     }
 
     @PostMapping("/masters/permission/authority")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<String> addPermissionForAuthority(@RequestBody PermissionVM permissionVM) {
         Optional<Master> optionalMaster = masterRepository.findById(permissionVM.getEntityId());
         if (!optionalMaster.isPresent() && permissionVM.getEntityId() != 0) {
@@ -208,6 +211,7 @@ public class MasterResource {
     }
 
     @PostMapping("/masters/permission/user")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<String> addPermissionForUser(@RequestBody PermissionVM permissionVM) {
         Optional<Master> optionalMaster = masterRepository.findById(permissionVM.getEntityId());
         if (!optionalMaster.isPresent() && permissionVM.getEntityId() != 0) {
@@ -235,6 +239,7 @@ public class MasterResource {
     }
 
     @PostMapping("/masters/permissions/user")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<String> addPermissions(@RequestBody List<PermissionVM> permissionVM) {
         masterService.addPermissions(permissionVM);
         return ResponseEntity.noContent().build();
@@ -246,6 +251,7 @@ public class MasterResource {
     }
 
     @DeleteMapping("/masters/delete-permission/user")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<String> deletePermission(@RequestBody PermissionVM permissionVM) {
         masterService.deletePermission(permissionVM);
         return ResponseEntity.noContent().build();
