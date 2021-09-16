@@ -75,7 +75,7 @@ public class MasterServiceImpl implements MasterService {
         if (checkPermission(authentication)) {
             masterList = masterRepository.findAll();
         } else {
-            masterList = masterRepository.findAll(getMastersIds());
+            masterList = masterRepository.findAllById(getMastersIds());
         }
 
         return masterList;
@@ -84,7 +84,7 @@ public class MasterServiceImpl implements MasterService {
     @Override
     @Transactional(readOnly = true)
     public Optional<Master> findOne(Long id) {
-        return masterRepository.findOneByPermission(id);
+        return masterRepository.findOneWithPermission(id);
     }
 
     @Override
@@ -141,7 +141,7 @@ public class MasterServiceImpl implements MasterService {
     public List<MasterPermissionDTO> getMastersByUser(String name) {
         List<MaskAndObject> mastersMaskAndObject = getMasterPermissionsForUserByName(name);
         List<Long> mastersIds = mastersMaskAndObject.stream().map(MaskAndObject::getObjId).collect(Collectors.toList());
-        List<Master> masters = masterRepository.findAll(mastersIds);
+        List<Master> masters = masterRepository.findAllById(mastersIds);
         List<MasterPermissionDTO> masterPermissionDto = mastersMaskAndObject
             .stream()
             .map(
