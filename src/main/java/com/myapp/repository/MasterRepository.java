@@ -15,11 +15,12 @@ import org.springframework.stereotype.Repository;
 @SuppressWarnings("unused")
 @Repository
 public interface MasterRepository extends JpaRepository<Master, Long> {
-    @PostFilter("hasPermission(filterObject, 'READ') or hasPermission(filterObject, 'WRITE') or hasAuthority('ROLE_ADMIN')")
-    List<Master> findAll();
-
     @PostAuthorize(
-        "hasPermission(returnObject, 'READ') or hasPermission(returnObject, 'WRITE') or hasPermission(returnObject, 'DELETE') or hasAuthority('ROLE_ADMIN') "
+        "hasPermission(returnObject, 'READ') or hasPermission(returnObject, 'WRITE') or hasPermission(returnObject, 'DELETE') or hasPermission(returnObject, 'ADMINISTRATION') or hasAuthority('ROLE_ADMIN')"
     )
-    Optional<Master> findById(@Param("id") Long id);
+    @Query("select master from Master master where master.id =:id")
+    Optional<Master> findOneWithPermission(@Param("id") Long id);
+
+    @Query("select master from Master master where master.id =:id")
+    Optional<Master> findOne(@Param("id") Long id);
 }

@@ -4,12 +4,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.myapp.service.HttpClient;
 import com.myapp.service.dto.CheckPermissionDto;
+import com.myapp.service.dto.DeletePermissionDto;
 import com.myapp.web.rest.AccountResource;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,15 +33,7 @@ public class HttpClientCheckPermissionDto implements HttpClient<CheckPermissionD
     public String get(String url) {
         HttpRequest request = null;
         try {
-            request =
-                HttpRequest
-                    .newBuilder()
-                    .uri(new URI(url))
-                    .GET()
-                    .header("Accept", "application/json")
-                    .header("Content-Type", "application/json")
-                    .header("X-TENANT-ID", "maksimdb")
-                    .build();
+            request = HttpRequest.newBuilder().uri(new URI(url)).header("X-TENANT-ID", "maksimdb").GET().build();
         } catch (URISyntaxException e) {
             log.error(e.toString());
         }
@@ -47,9 +41,7 @@ public class HttpClientCheckPermissionDto implements HttpClient<CheckPermissionD
         HttpResponse<String> response = null;
         try {
             response = java.net.http.HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (IOException e) {
-            log.error(e.toString());
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             log.error(e.toString());
         }
 
@@ -57,7 +49,7 @@ public class HttpClientCheckPermissionDto implements HttpClient<CheckPermissionD
     }
 
     @Override
-    public String post(String url, CheckPermissionDto dto, String header) {
+    public String post(String url, CheckPermissionDto dto, String token) {
         HttpRequest request = null;
         try {
             request =
@@ -66,7 +58,7 @@ public class HttpClientCheckPermissionDto implements HttpClient<CheckPermissionD
                     .uri(new URI(url))
                     .header("Accept", "application/json")
                     .header("Content-Type", "application/json")
-                    .header("Authorization", "Bearer " + header)
+                    .header("Authorization", "Bearer " + token)
                     .header("X-TENANT-ID", "maksimdb")
                     .POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(dto)))
                     .build();
@@ -77,9 +69,35 @@ public class HttpClientCheckPermissionDto implements HttpClient<CheckPermissionD
         HttpResponse<String> response = null;
         try {
             response = java.net.http.HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             log.error(e.toString());
-        } catch (InterruptedException e) {
+        }
+
+        return response.body();
+    }
+
+    @Override
+    public String post(String uri, List<CheckPermissionDto> entity, String token) {
+        HttpRequest request = null;
+        try {
+            request =
+                HttpRequest
+                    .newBuilder()
+                    .uri(new URI(uri))
+                    .header("Accept", "application/json")
+                    .header("Content-Type", "application/json")
+                    .header("Authorization", "Bearer " + token)
+                    .header("X-TENANT-ID", "maksimdb")
+                    .POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(entity)))
+                    .build();
+        } catch (URISyntaxException | JsonProcessingException e) {
+            log.error(e.toString());
+        }
+
+        HttpResponse<String> response = null;
+        try {
+            response = java.net.http.HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (IOException | InterruptedException e) {
             log.error(e.toString());
         }
 

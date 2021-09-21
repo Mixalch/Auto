@@ -1,9 +1,13 @@
 package com.myapp.web.rest;
 
+import com.myapp.domain.DeletePermission;
 import com.myapp.domain.Master;
 import com.myapp.domain.PermissionVM;
 import com.myapp.repository.MasterRepository;
+import com.myapp.security.AuthoritiesConstants;
+import com.myapp.service.MasterService;
 import com.myapp.service.PermissionService;
+import com.myapp.service.dto.MasterPermissionDTO;
 import com.myapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -14,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.model.Permission;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,10 +43,13 @@ public class MasterResource {
 
     private final MasterRepository masterRepository;
 
+    private final MasterService masterService;
+
     private final PermissionService permissionService;
 
-    public MasterResource(MasterRepository masterRepository, PermissionService permissionService) {
+    public MasterResource(MasterRepository masterRepository, MasterService masterService, PermissionService permissionService) {
         this.masterRepository = masterRepository;
+        this.masterService = masterService;
         this.permissionService = permissionService;
     }
 
@@ -58,7 +66,8 @@ public class MasterResource {
         if (master.getId() != null) {
             throw new BadRequestAlertException("A new master cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Master result = masterRepository.save(master);
+        master.setId(0L);
+        Master result = masterService.save(master);
         return ResponseEntity
             .created(new URI("/api/masters/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -90,11 +99,11 @@ public class MasterResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Master result = masterRepository.save(master);
+        Optional<Master> result = masterService.partialUpdate(master);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, master.getId().toString()))
-            .body(result);
+            .body(result.get());
     }
 
     /**
@@ -125,24 +134,10 @@ public class MasterResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<Master> result = masterRepository
-            .findById(master.getId())
-            .map(
-                existingMaster -> {
-                    if (master.getName() != null) {
-                        existingMaster.setName(master.getName());
-                    }
-                    if (master.getDate() != null) {
-                        existingMaster.setDate(master.getDate());
-                    }
-
-                    return existingMaster;
-                }
-            )
-            .map(masterRepository::save);
+        Optional<Master> optionalMaster = masterService.partialUpdate(master);
 
         return ResponseUtil.wrapOrNotFound(
-            result,
+            optionalMaster,
             HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, master.getId().toString())
         );
     }
@@ -155,7 +150,7 @@ public class MasterResource {
     @GetMapping("/masters")
     public List<Master> getAllMasters() {
         log.debug("REST request to get all Masters");
-        return masterRepository.findAll();
+        return masterService.findAll();
     }
 
     /**
@@ -167,7 +162,7 @@ public class MasterResource {
     @GetMapping("/masters/{id}")
     public ResponseEntity<Master> getMaster(@PathVariable Long id) {
         log.debug("REST request to get Master : {}", id);
-        Optional<Master> master = masterRepository.findById(id);
+        Optional<Master> master = masterService.findOne(id);
         return ResponseUtil.wrapOrNotFound(master);
     }
 
@@ -180,7 +175,8 @@ public class MasterResource {
     @DeleteMapping("/masters/{id}")
     public ResponseEntity<Void> deleteMaster(@PathVariable Long id) {
         log.debug("REST request to delete Master : {}", id);
-        masterRepository.deleteById(id);
+        Optional<Master> optionalMaster = masterRepository.findOne(id);
+        masterService.delete(optionalMaster.get());
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
@@ -188,13 +184,24 @@ public class MasterResource {
     }
 
     @PostMapping("/masters/permission/authority")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<String> addPermissionForAuthority(@RequestBody PermissionVM permissionVM) {
         Optional<Master> optionalMaster = masterRepository.findById(permissionVM.getEntityId());
-        if (!optionalMaster.isPresent()) {
-            return ResponseEntity.ok("car brand does not found");
+        if (!optionalMaster.isPresent() && permissionVM.getEntityId() != 0) {
+            return ResponseEntity.ok("book does not found");
         }
-
-        Master master = optionalMaster.get();
+        Master master;
+        if (permissionVM.getEntityId() == 0 && permissionVM.getPermission().equalsIgnoreCase("create")) {
+            master = new Master();
+            master.setId(0L);
+        } else {
+            master = optionalMaster.get();
+        }
+        permissionService.addPermissionForUser(
+            master,
+            convertFromStringToBasePermission(permissionVM.getPermission()),
+            permissionVM.getUserCredentional()
+        );
         permissionService.addPermissionForAuthority(
             master,
             convertFromStringToBasePermission(permissionVM.getPermission()),
@@ -204,14 +211,49 @@ public class MasterResource {
     }
 
     @PostMapping("/masters/permission/user")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<String> addPermissionForUser(@RequestBody PermissionVM permissionVM) {
-        Master master = new Master();
-        master.setId(permissionVM.getEntityId());
+        Optional<Master> optionalMaster = masterRepository.findById(permissionVM.getEntityId());
+        if (!optionalMaster.isPresent() && permissionVM.getEntityId() != 0) {
+            return ResponseEntity.ok("book does not found");
+        }
+        Master master;
+        if (permissionVM.getEntityId() == 0 && permissionVM.getPermission().equalsIgnoreCase("create")) {
+            master = new Master();
+            master.setId(0L);
+        } else {
+            master = optionalMaster.get();
+        }
         permissionService.addPermissionForUser(
             master,
             convertFromStringToBasePermission(permissionVM.getPermission()),
             permissionVM.getUserCredentional()
         );
+
+        permissionService.addPermissionForUser(
+            master,
+            convertFromStringToBasePermission(permissionVM.getPermission()),
+            permissionVM.getUserCredentional()
+        );
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/masters/permissions/user")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    public ResponseEntity<String> addPermissions(@RequestBody List<PermissionVM> permissionVM) {
+        masterService.addPermissions(permissionVM);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/masters/by-user/{userName}")
+    public ResponseEntity<List<MasterPermissionDTO>> getMastersByUserName(@PathVariable String userName) {
+        return ResponseEntity.ok().body(masterService.getMastersByUser(userName));
+    }
+
+    @DeleteMapping("/masters/delete-permission/user")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    public ResponseEntity<String> deletePermission(@RequestBody PermissionVM permissionVM) {
+        masterService.deletePermission(permissionVM);
         return ResponseEntity.noContent().build();
     }
 
